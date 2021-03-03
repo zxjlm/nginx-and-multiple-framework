@@ -1,0 +1,33 @@
+version: '3.8'
+
+services: 
+
+  api1:
+    build: backend1/.
+    # image: api1
+    # ports: 
+      # - 5001:5001
+    command: python app.py
+  
+  api2:
+    build: backend2/.
+    # image: api2
+    # ports: 
+      # - 5002:5002
+    command: uvicorn main:app --reload --port 80 --host 0.0.0.0
+
+  api3:
+    build: backend3/.
+    command: node app.js
+
+  nginx-server:
+    image: nginx
+    volumes: 
+      - $PWD/config:/etc/nginx
+      - $PWD/log:/var/log/nginx
+    ports: 
+      - 80:80
+    depends_on: 
+      - api1
+      - api2
+      - api3
